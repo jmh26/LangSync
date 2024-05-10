@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "764445866236",
+    "project_id": "langsync-c706b",
+    "storage_bucket": "langsync-c706b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:764445866236:android:84e0573434f161b007bf79",
+        "android_client_info": {
+          "package_name": "com.example.langsync"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAr9JtkJYH36EuhJ6DsH5OD0UdkZAE7LVo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
