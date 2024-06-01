@@ -9,7 +9,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.langsync.Home
 import com.example.langsync.R
 import com.example.langsync.Utilidades
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -18,7 +20,7 @@ import kotlin.coroutines.CoroutineContext
 
 class AnadirPregunta: AppCompatActivity(), CoroutineScope {
 
-    private lateinit var crear: Button
+    private lateinit var crear: FloatingActionButton
     private lateinit var texto: EditText
     private lateinit var db_ref: DatabaseReference
     private lateinit var job: Job
@@ -28,20 +30,22 @@ class AnadirPregunta: AppCompatActivity(), CoroutineScope {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_anadir_pregunta)
+        job = Job()
+        db_ref = FirebaseDatabase.getInstance().reference
         val thisActivity = this
         texto = findViewById(R.id.et_pregunta)
         crear = findViewById(R.id.fab_crearPregunta)
 
         crear.setOnClickListener {
-            val texto = texto.text.toString()
-            if (texto.isNotEmpty()) {
+            val textoIngresado = texto.text.toString()
+            if (textoIngresado.isNotEmpty()) {
                 var id_generada = db_ref.child("LangSync").child("Preguntas").push().key
 
                 launch {
 
                     var pregunta = Pregunta(
                         id_generada,
-                        texto
+                        textoIngresado
                     )
                     Utilidades.crearPregunta(db_ref, pregunta)
 

@@ -15,13 +15,13 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 
 lateinit var auth: FirebaseAuth
-private var user: FirebaseUser?=null
+private var user: FirebaseUser? = null
 private lateinit var etEmail: EditText
 private lateinit var etContra: EditText
 private lateinit var registro: Button
 private lateinit var noTengoCuenta: TextView
 
-class Login: AppCompatActivity() {
+class Login : AppCompatActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -84,10 +84,10 @@ class Login: AppCompatActivity() {
                             startActivity(Intent(this, Home::class.java))
                         }
                         finish()
-                    } else {
-                        Log.e("Login", "Error al iniciar sesión: ${task.exception?.message}")
-                        Toast.makeText(this, "Error al iniciar sesión", Toast.LENGTH_SHORT).show()
                     }
+                } else {
+                    Log.e("Login", "Error al iniciar sesión: ${task.exception?.message}")
+                    Toast.makeText(this, "Error al iniciar sesión", Toast.LENGTH_SHORT).show()
                 }
 
 

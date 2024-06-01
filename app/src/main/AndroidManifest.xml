@@ -30,6 +30,7 @@
         <activity android:name=".Preguntas.AnadirPregunta"
             android:exported="true">
 
+
         </activity>
 
         <activity

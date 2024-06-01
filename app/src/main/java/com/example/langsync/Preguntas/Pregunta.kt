@@ -8,7 +8,7 @@ import kotlinx.android.parcel.Parcelize
 data class Pregunta(
     var id: String? = null,
     var texto: String? = null,
-    var idioma: String? = null
+    var fecha: String? = null
 
 
 
