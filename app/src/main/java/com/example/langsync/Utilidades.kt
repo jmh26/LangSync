@@ -13,7 +13,7 @@ class Utilidades {
     companion object{
         fun crearUsuario(id:String, email: String, contra:String, rol: String,nombre: String){
             var db_ref = FirebaseDatabase.getInstance().reference
-            val urlFotoPredeterminada = "android.resource://com.example.langsync/drawable/baseline_person_2_24"
+            val urlFotoPredeterminada = "android.resource://com.example.langsync/drawable/baseline_person_2_25"
             val nombre = email.substringBefore('@')
             val usuario = Usuario(id, email, contra, rol, urlFotoPredeterminada, nombre)
             db_ref.child("LangSync").child("Usuarios").child(id).setValue(usuario)

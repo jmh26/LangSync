@@ -11,20 +11,24 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.langsync.R
+import com.example.langsync.Respuestas.PreguntaClickListener
 import com.google.firebase.database.FirebaseDatabase
 
-class PreguntasAdaptador (private val listaPreguntas: MutableList<Pregunta>): RecyclerView.Adapter<PreguntasAdaptador.PreguntaViewHolder>(),
+class PreguntasAdaptador (private val listaPreguntas: MutableList<Pregunta>, private var contexto: Context, private val clickListener: PreguntaClickListener ): RecyclerView.Adapter<PreguntasAdaptador.PreguntaViewHolder>(),
 
     Filterable {
-    private lateinit var contexto: Context
     private var listaPreguntasFiltrada = listaPreguntas
+
 
 
     class PreguntaViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val texto = itemView.findViewById<TextView>(R.id.tv_texto)
         val fecha = itemView.findViewById<TextView>(R.id.tv_fecha)
         val eliminar = itemView.findViewById<ImageView>(R.id.iv_eliminar)
+        val nombre = itemView.findViewById<TextView>(R.id.nombrePregunta)
+        val imagenPerfil = itemView.findViewById<ImageView>(R.id.iv_imagenPregunta)
 
     }
 
@@ -70,6 +74,39 @@ class PreguntasAdaptador (private val listaPreguntas: MutableList<Pregunta>): Re
         holder.texto.text = preguntaActual.texto
         holder.fecha.text = preguntaActual.fecha
 
+        holder.itemView.setOnClickListener {
+            clickListener.onPreguntaClick(preguntaActual)
+        }
+
+        val databaseReference = FirebaseDatabase.getInstance().reference
+        val userId = preguntaActual.userId
+        if (userId != null) {
+            databaseReference.child("LangSync").child("Usuarios").child(userId).get()
+                .addOnSuccessListener { snapshot ->
+                    val nombre = snapshot.child("nombre").value as? String
+                    val urlFoto = snapshot.child("url_foto").value as? String
+
+                    holder.nombre.text = nombre ?: "Nombre no encontrado"
+
+                    urlFoto?.let {
+                        Glide.with(contexto)
+                            .load(it)
+                            .placeholder(R.drawable.baseline_person_2_24)
+                            .into(holder.imagenPerfil)
+                    } ?: run {
+                        holder.imagenPerfil.setImageResource(R.drawable.baseline_person_2_24)
+                    }
+                }
+                .addOnFailureListener {
+                    // Manejar el caso de falla al obtener la información del usuario
+                    holder.nombre.text = "Nombre no encontrado"
+                    holder.imagenPerfil.setImageResource(R.drawable.baseline_person_2_24)
+                }
+        } else {
+            // Manejar el caso en el que el ID de usuario es nulo
+            holder.nombre.text = "ID de usuario no válido"
+            holder.imagenPerfil.setImageResource(R.drawable.baseline_person_2_24)
+        }
 
         var sharedPreferences = contexto.getSharedPreferences("login", Context.MODE_PRIVATE)
         var esAdmin = sharedPreferences.getBoolean("esAdmin", false)
@@ -87,10 +124,9 @@ class PreguntasAdaptador (private val listaPreguntas: MutableList<Pregunta>): Re
                     Toast.makeText(contexto, "Error al eliminar pregunta", Toast.LENGTH_SHORT).show()
                 }
             }
-        }else{
+        } else {
             holder.eliminar.visibility = View.GONE
         }
-
     }
 
 

@@ -19,16 +19,14 @@
         app:layout_constraintEnd_toEndOf="parent">
 
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/iv_imagenPerfil"
             android:layout_width="70dp"
             android:layout_height="70dp"
-            android:id="@+id/iv_imagenPerfil"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:src="@drawable/baseline_person_2_24">
-
-
-        </ImageView>
+        </de.hdodenhof.circleimageview.CircleImageView>
 
         <TextView
             android:layout_width="wrap_content"

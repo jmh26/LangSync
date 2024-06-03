@@ -18,8 +18,8 @@
 
         <ImageView
             android:id="@+id/iv_imagenPerfil"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_margin="30dp"
             android:src="@drawable/baseline_person_2_25" />
     </LinearLayout>
