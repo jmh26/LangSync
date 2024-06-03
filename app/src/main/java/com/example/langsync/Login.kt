@@ -1,7 +1,5 @@
 package com.example.langsync
 
-
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -10,9 +8,12 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat.startActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 lateinit var auth: FirebaseAuth
 private var user: FirebaseUser? = null
@@ -23,15 +24,12 @@ private lateinit var noTengoCuenta: TextView
 
 class Login : AppCompatActivity() {
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         auth = FirebaseAuth.getInstance()
 
         noTengoCuenta = findViewById(R.id.tvNoTengoCuenta)
-
-
         noTengoCuenta.setOnClickListener {
             startActivity(Intent(this, Registro::class.java))
         }
@@ -45,23 +43,13 @@ class Login : AppCompatActivity() {
             val contra = etContra.text.toString()
 
             if (email.isNotEmpty() && contra.isNotEmpty()) {
-                if (Utilidades.esAdmin(email, contra)) {
-                    loginUser(email, contra)
-                } else {
-                    loginUser(email, contra)
-                }
-
-
+                loginUser(email, contra)
             } else {
                 Toast.makeText(this, "Por favor, rellena todos los campos", Toast.LENGTH_SHORT)
                     .show()
             }
-
         }
-
-
     }
-
 
     private fun loginUser(email: String, contra: String) {
         auth.signInWithEmailAndPassword(email, contra)
@@ -70,31 +58,41 @@ class Login : AppCompatActivity() {
                     val currentUser: FirebaseUser? = auth.currentUser
                     val userId = currentUser?.uid
                     val rol = Utilidades.obtenerRol(email, contra, auth)
+
                     if (userId != null) {
-                        Utilidades.crearUsuario(userId, email, contra, rol)
-                        Log.d("Login", "Usuario logueado como: $rol")
-                        val esAdmin = rol == "administrador"
-                        val sharedPref = getSharedPreferences("login", MODE_PRIVATE)
-                        val editor = sharedPref.edit()
-                        editor.putBoolean("esAdmin", esAdmin)
-                        editor.apply()
-                        if (esAdmin) {
-                            startActivity(Intent(this, Home::class.java))
-                        } else {
-                            startActivity(Intent(this, Home::class.java))
-                        }
-                        finish()
+                        // Verificar si el usuario ya existe en la base de datos
+                        val databaseReference = FirebaseDatabase.getInstance().reference
+                        val userRef =
+                            databaseReference.child("LangSync").child("Usuarios").child(userId)
+                        userRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onDataChange(snapshot: DataSnapshot) {
+                                if (!snapshot.exists()) {
+                                    // Si el usuario no existe, crearlo
+                                    val nombre = email.substringBefore('@')
+                                    Utilidades.crearUsuario(userId, email, contra, rol, nombre)
+                                }
+                                // Continuar con el resto del código
+                                Log.d("Login", "Usuario logueado como: $rol")
+                                val esAdmin = rol == "administrador"
+                                val sharedPref = getSharedPreferences("login", MODE_PRIVATE)
+                                val editor = sharedPref.edit()
+                                editor.putBoolean("esAdmin", esAdmin)
+                                editor.apply()
+
+                                startActivity(Intent(this@Login, Home::class.java))
+                                finish()
+                            }
+
+                            override fun onCancelled(error: DatabaseError) {
+                                Log.e(
+                                    "Login",
+                                    "Error al verificar el usuario en la base de datos: ${error.message}"
+                                )
+                            }
+                        })
                     }
-                } else {
-                    Log.e("Login", "Error al iniciar sesión: ${task.exception?.message}")
-                    Toast.makeText(this, "Error al iniciar sesión", Toast.LENGTH_SHORT).show()
                 }
-
-
             }
-
-
     }
-
 }
 

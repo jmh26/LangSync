@@ -10,7 +10,9 @@ data class Usuario(
     var id: String? = null,
     var email: String? = null,
     var contrasena: String? = null,
+    var rol: String? ="",
     var url_foto: String? = null,
-    var tipo: String? =""
+    var nombre: String? = null
+
 
 ): Parcelable

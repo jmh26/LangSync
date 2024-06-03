@@ -11,10 +11,12 @@ import com.google.firebase.database.FirebaseDatabase
 class Utilidades {
 
     companion object{
-        fun crearUsuario(id:String, email: String, contra:String, rol: String){
+        fun crearUsuario(id:String, email: String, contra:String, rol: String,nombre: String){
             var db_ref = FirebaseDatabase.getInstance().reference
-            val usuario = Usuario(id,email, contra, rol)
-            db_ref.child("LangSync").child("Usuarios").child(FirebaseAuth.getInstance().currentUser!!.uid).setValue(usuario)
+            val urlFotoPredeterminada = "android.resource://com.example.langsync/drawable/baseline_person_2_24"
+            val nombre = email.substringBefore('@')
+            val usuario = Usuario(id, email, contra, rol, urlFotoPredeterminada, nombre)
+            db_ref.child("LangSync").child("Usuarios").child(id).setValue(usuario)
         }
 
         fun esAdmin(email: String, contra: String): Boolean {

@@ -46,7 +46,7 @@ class Registro: AppCompatActivity() {
             val contra = etContra.text.toString()
 
             if (email.isNotEmpty() && contra.isNotEmpty()) {
-                registerUser(email, contra)
+                registerUser(email, contra, email.substringBefore('@'))
             } else {
                 Toast.makeText(this, "Por favor, rellena todos los campos", Toast.LENGTH_SHORT)
                     .show()
@@ -58,37 +58,33 @@ class Registro: AppCompatActivity() {
     }
 
 
-    private fun registerUser(email: String, contra: String) {
+    private fun registerUser(email: String, contra: String, nombre: String) {
         auth.createUserWithEmailAndPassword(email, contra)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     user = auth.currentUser
                     val userId = user?.uid
                     if (userId != null) {
-                        val rol = if (Utilidades.esAdmin(email, contra)) {
-                            "administrador"
-                        } else {
-                            "usuario"
-                        }
-                        Utilidades.crearUsuario(userId, email, contra, rol)
+                        val esAdmin = Utilidades.esAdmin(email, contra)
 
-                        val esAdmin = rol == "administrador"
-                        val sharedPref = getSharedPreferences("login", MODE_PRIVATE)
-                        val editor = sharedPref.edit()
-                        editor.putBoolean("esAdmin", esAdmin)
-                        editor.apply()
+                        val sharedPrefEditor = getSharedPreferences("login", MODE_PRIVATE).edit()
+                        sharedPrefEditor.putString("email", email)
+                        sharedPrefEditor.putBoolean("esAdmin", esAdmin)
+                        sharedPrefEditor.putString("nombre", nombre)
+                        sharedPrefEditor.apply()
 
-                        if (esAdmin) {
-                            startActivity(Intent(this, Home::class.java))
-                        } else {
-                            startActivity(Intent(this, Home::class.java))
-                        }
+                        val rol = if (esAdmin) "administrador" else "usuario"
+                        Utilidades.crearUsuario(userId, email, contra, rol, nombre)
 
-                        Toast.makeText(this, "Usuario registrado correctamente", Toast.LENGTH_SHORT)
-                            .show()
+                        startActivity(Intent(this, Home::class.java))
+
+                        Toast.makeText(this, "Usuario registrado correctamente", Toast.LENGTH_SHORT).show()
                     } else {
                         Toast.makeText(this, "Error al crear el usuario", Toast.LENGTH_SHORT).show()
                     }
+                } else {
+                    Toast.makeText(this, "Error al registrar el usuario: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                    Log.e("Registro", "Error al registrar el usuario", task.exception)
                 }
             }
     }

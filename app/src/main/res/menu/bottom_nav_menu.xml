@@ -3,22 +3,27 @@
 
 
     <item
-        android:id="@+id/prueba1Fragment"
-        android:icon="@drawable/baseline_home_24"
-        android:title="prueba1"
-        />
-
-
-    <item
         android:id="@+id/preguntasFragment"
         android:icon="@drawable/baseline_home_24"
         android:title="Home"
         />
 
-    <item
-        android:id="@+id/prueba2Fragment"
-        android:icon="@drawable/baseline_home_24"
 
-        android:title="prueba2"
+    <item
+        android:id="@+id/buscarFragment"
+        android:icon="@drawable/zoom_lens"
+        android:title="Buscar"
+        />
+
+    <item
+        android:id="@+id/notificacionesFragment"
+        android:icon="@drawable/baseline_notifications_active_24"
+
+        android:title="Notificaciones"
+        />
+    <item
+        android:id="@+id/perfilFragment"
+        android:icon="@drawable/baseline_person_2_25"
+        android:title="Perfil"
         />
 </menu>

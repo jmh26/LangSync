@@ -9,4 +9,10 @@
         android:name="com.example.langsync.Preguntas.PreguntasFragment"
         android:label="Preguntas"
         tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/perfilFragment"
+        android:name="com.example.langsync.Perfil.PerfilFragment"
+        android:label="perfil"
+        tools:layout="@layout/fragment_perfil" />
 </navigation>

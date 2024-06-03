@@ -27,6 +27,9 @@
             android:exported="true">
 
         </activity>
+        <activity android:name=".Perfil.EditarPerfil">
+
+        </activity>
         <activity android:name=".Preguntas.AnadirPregunta"
             android:exported="true">
 
