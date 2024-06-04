@@ -41,8 +41,11 @@
             android:exported="true">
 
         </activity>
-        <activity
-            android:name=".Respuestas.ResponderPreguntaActivity"
+        <activity android:name=".ResponderPreguntaActivity"
+            android:exported="true">
+
+        </activity>
+        <activity android:name=".Perfil.PerfilUsuarioActivity"
             android:exported="true">
 
         </activity>

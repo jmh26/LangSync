@@ -1,7 +1,6 @@
 package com.example.langsync.Preguntas
 
 import android.content.Context
-import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,12 +15,12 @@ import com.example.langsync.R
 import com.example.langsync.Respuestas.PreguntaClickListener
 import com.google.firebase.database.FirebaseDatabase
 
-class PreguntasAdaptador (private val listaPreguntas: MutableList<Pregunta>, private var contexto: Context, private val clickListener: PreguntaClickListener ): RecyclerView.Adapter<PreguntasAdaptador.PreguntaViewHolder>(),
+class PreguntasAdaptador(
+    private val listaPreguntas: MutableList<Pregunta>,
+    private val clickListener: PreguntaClickListener
+) : RecyclerView.Adapter<PreguntasAdaptador.PreguntaViewHolder>(), Filterable {
 
-    Filterable {
     private var listaPreguntasFiltrada = listaPreguntas
-
-
 
     class PreguntaViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val texto = itemView.findViewById<TextView>(R.id.tv_texto)
@@ -29,15 +28,14 @@ class PreguntasAdaptador (private val listaPreguntas: MutableList<Pregunta>, pri
         val eliminar = itemView.findViewById<ImageView>(R.id.iv_eliminar)
         val nombre = itemView.findViewById<TextView>(R.id.nombrePregunta)
         val imagenPerfil = itemView.findViewById<ImageView>(R.id.iv_imagenPregunta)
-
     }
 
     override fun getFilter(): Filter {
         return object : Filter() {
             override fun performFiltering(constraint: CharSequence?): FilterResults {
                 val busqueda = constraint.toString()
-                if (busqueda.isEmpty()) {
-                    listaPreguntasFiltrada = listaPreguntas
+                listaPreguntasFiltrada = if (busqueda.isEmpty()) {
+                    listaPreguntas
                 } else {
                     val resultList = mutableListOf<Pregunta>()
                     for (row in listaPreguntas) {
@@ -45,11 +43,9 @@ class PreguntasAdaptador (private val listaPreguntas: MutableList<Pregunta>, pri
                             resultList.add(row)
                         }
                     }
-                    listaPreguntasFiltrada = resultList
+                    resultList
                 }
-                val filterResults = FilterResults()
-                filterResults.values = listaPreguntasFiltrada
-                return filterResults
+                return FilterResults().apply { values = listaPreguntasFiltrada }
             }
 
             override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
@@ -59,14 +55,9 @@ class PreguntasAdaptador (private val listaPreguntas: MutableList<Pregunta>, pri
         }
     }
 
-
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
-    ): PreguntasAdaptador.PreguntaViewHolder {
-        contexto = parent.context
-        val itemView = LayoutInflater.from(contexto).inflate(R.layout.item_pregunta, parent, false)
-        return PreguntasAdaptador.PreguntaViewHolder(itemView)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PreguntaViewHolder {
+        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_pregunta, parent, false)
+        return PreguntaViewHolder(itemView)
     }
 
     override fun onBindViewHolder(holder: PreguntaViewHolder, position: Int) {
@@ -89,7 +80,7 @@ class PreguntasAdaptador (private val listaPreguntas: MutableList<Pregunta>, pri
                     holder.nombre.text = nombre ?: "Nombre no encontrado"
 
                     urlFoto?.let {
-                        Glide.with(contexto)
+                        Glide.with(holder.itemView.context)
                             .load(it)
                             .placeholder(R.drawable.baseline_person_2_24)
                             .into(holder.imagenPerfil)
@@ -98,37 +89,40 @@ class PreguntasAdaptador (private val listaPreguntas: MutableList<Pregunta>, pri
                     }
                 }
                 .addOnFailureListener {
-                    // Manejar el caso de falla al obtener la información del usuario
                     holder.nombre.text = "Nombre no encontrado"
                     holder.imagenPerfil.setImageResource(R.drawable.baseline_person_2_24)
                 }
         } else {
-            // Manejar el caso en el que el ID de usuario es nulo
             holder.nombre.text = "ID de usuario no válido"
             holder.imagenPerfil.setImageResource(R.drawable.baseline_person_2_24)
         }
 
-        var sharedPreferences = contexto.getSharedPreferences("login", Context.MODE_PRIVATE)
-        var esAdmin = sharedPreferences.getBoolean("esAdmin", false)
+        val sharedPreferences = holder.itemView.context.getSharedPreferences("login", Context.MODE_PRIVATE)
+        val esAdmin = sharedPreferences.getBoolean("esAdmin", false)
 
-        if (esAdmin){
+        if (esAdmin) {
             holder.eliminar.visibility = View.VISIBLE
             holder.eliminar.setOnClickListener {
                 try {
-                    val db_ref = FirebaseDatabase.getInstance().reference
+                    val dbRef = FirebaseDatabase.getInstance().reference
                     listaPreguntas.remove(preguntaActual)
+                    notifyDataSetChanged() // Asegurarse de actualizar la vista
 
-                    db_ref.child("LangSync").child("Preguntas").child(preguntaActual.id!!).removeValue()
-                    Toast.makeText(contexto, "Pregunta eliminada", Toast.LENGTH_SHORT).show()
+                    dbRef.child("LangSync").child("Preguntas").child(preguntaActual.id!!).removeValue()
+                        .addOnSuccessListener {
+                            Toast.makeText(holder.itemView.context, "Pregunta eliminada", Toast.LENGTH_SHORT).show()
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(holder.itemView.context, "Error al eliminar pregunta", Toast.LENGTH_SHORT).show()
+                        }
                 } catch (e: Exception) {
-                    Toast.makeText(contexto, "Error al eliminar pregunta", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(holder.itemView.context, "Error al eliminar pregunta", Toast.LENGTH_SHORT).show()
                 }
             }
         } else {
             holder.eliminar.visibility = View.GONE
         }
     }
-
 
     override fun getItemCount(): Int = listaPreguntasFiltrada.size
 }
