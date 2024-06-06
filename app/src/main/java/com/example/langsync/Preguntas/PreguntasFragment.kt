@@ -58,3 +58,5 @@ class PreguntasFragment : Fragment() {
         _binding = null
     }
 }
+
+

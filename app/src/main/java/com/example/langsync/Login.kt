@@ -56,7 +56,6 @@ class Login : AppCompatActivity() {
                 if (task.isSuccessful) {
                     user = auth.currentUser
                     val userId = user?.uid
-                    val rol = "usuario" // Asigna el rol predeterminado
 
                     if (userId != null) {
                         // Verificar si el usuario ya existe en la base de datos
@@ -69,18 +68,28 @@ class Login : AppCompatActivity() {
                                     val nombre = email.substringBefore('@')
                                     val idiomaNativo = "Español" // Valor predeterminado o puedes obtenerlo de alguna fuente
                                     val idiomaInteres = "Inglés" // Valor predeterminado o puedes obtenerlo de alguna fuente
+                                    val rol = Utilidades.obtenerRol(email, contra, auth)
                                     Utilidades.crearUsuario(userId, email, contra, rol, nombre, idiomaNativo, idiomaInteres)
                                 }
-                                // Continuar con el resto del código
-                                Log.d("Login", "Usuario logueado como: $rol")
-                                val esAdmin = rol == "administrador"
-                                val sharedPref = getSharedPreferences("login", Context.MODE_PRIVATE)
-                                val editor = sharedPref.edit()
-                                editor.putBoolean("esAdmin", esAdmin)
-                                editor.apply()
+                                // Recuperar el rol del usuario
+                                userRef.child("rol").addListenerForSingleValueEvent(object : ValueEventListener {
+                                    override fun onDataChange(snapshot: DataSnapshot) {
+                                        val rol = snapshot.getValue(String::class.java) ?: "usuario"
+                                        val esAdmin = rol == "administrador"
+                                        val sharedPref = getSharedPreferences("login", Context.MODE_PRIVATE)
+                                        val editor = sharedPref.edit()
+                                        editor.putBoolean("esAdmin", esAdmin)
+                                        editor.apply()
 
-                                startActivity(Intent(this@Login, Home::class.java))
-                                finish()
+                                        Log.d("Login", "Usuario logueado como: $rol")
+                                        startActivity(Intent(this@Login, Home::class.java))
+                                        finish()
+                                    }
+
+                                    override fun onCancelled(error: DatabaseError) {
+                                        Log.e("Login", "Error al verificar el rol del usuario en la base de datos: ${error.message}")
+                                    }
+                                })
                             }
 
                             override fun onCancelled(error: DatabaseError) {
@@ -95,3 +104,4 @@ class Login : AppCompatActivity() {
             }
     }
 }
+

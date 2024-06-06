@@ -24,12 +24,12 @@ class PreguntasAdaptador(
     private var listaPreguntasFiltrada = listaPreguntas
 
     class PreguntaViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val texto = itemView.findViewById<TextView>(R.id.tv_texto)
-        val fecha = itemView.findViewById<TextView>(R.id.tv_fecha)
-        val idioma = itemView.findViewById<TextView>(R.id.tv_idioma)
-        val eliminar = itemView.findViewById<ImageView>(R.id.iv_eliminar)
-        val nombre = itemView.findViewById<TextView>(R.id.nombrePregunta)
-        val imagenPerfil = itemView.findViewById<ImageView>(R.id.iv_imagenPregunta)
+        val texto: TextView = itemView.findViewById(R.id.tv_texto)
+        val fecha: TextView = itemView.findViewById(R.id.tv_fecha)
+        val idioma: TextView = itemView.findViewById(R.id.tv_idioma)
+        val eliminar: ImageView = itemView.findViewById(R.id.iv_eliminar)
+        val nombre: TextView = itemView.findViewById(R.id.nombrePregunta)
+        val imagenPerfil: ImageView = itemView.findViewById(R.id.iv_imagenPregunta)
     }
 
     override fun getFilter(): Filter {
@@ -108,25 +108,27 @@ class PreguntasAdaptador(
         // Mostrar el icono de eliminar si el usuario es admin o el propietario de la pregunta
         if (esAdmin || userId == currentUserId) {
             holder.eliminar.visibility = View.VISIBLE
-            holder.eliminar.setOnClickListener {
-                try {
-                    val dbRef = FirebaseDatabase.getInstance().reference
-                    listaPreguntas.remove(preguntaActual)
-                    notifyDataSetChanged() // Asegurarse de actualizar la vista
-
-                    dbRef.child("LangSync").child("Preguntas").child(preguntaActual.id!!).removeValue()
-                        .addOnSuccessListener {
-                            Toast.makeText(holder.itemView.context, "Pregunta eliminada", Toast.LENGTH_SHORT).show()
-                        }
-                        .addOnFailureListener {
-                            Toast.makeText(holder.itemView.context, "Error al eliminar pregunta", Toast.LENGTH_SHORT).show()
-                        }
-                } catch (e: Exception) {
-                    Toast.makeText(holder.itemView.context, "Error al eliminar pregunta", Toast.LENGTH_SHORT).show()
-                }
-            }
         } else {
             holder.eliminar.visibility = View.GONE
+        }
+
+        // Logica para eliminar la pregunta
+        holder.eliminar.setOnClickListener {
+            try {
+                val dbRef = FirebaseDatabase.getInstance().reference
+                listaPreguntas.remove(preguntaActual)
+                notifyDataSetChanged() // Asegurarse de actualizar la vista
+
+                dbRef.child("LangSync").child("Preguntas").child(preguntaActual.id!!).removeValue()
+                    .addOnSuccessListener {
+                        Toast.makeText(holder.itemView.context, "Pregunta eliminada", Toast.LENGTH_SHORT).show()
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(holder.itemView.context, "Error al eliminar pregunta", Toast.LENGTH_SHORT).show()
+                    }
+            } catch (e: Exception) {
+                Toast.makeText(holder.itemView.context, "Error al eliminar pregunta", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

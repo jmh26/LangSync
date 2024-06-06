@@ -159,22 +159,38 @@
             android:layout_marginTop="10dp" />
     </LinearLayout>
 
-    <EditText
-        android:id="@+id/et_translate_text"
-        android:layout_width="0dp"
+
+    <TextView
+        android:id="@+id/tv_translate_title"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="Enter text to translate"
-        android:layout_marginTop="16dp"
-        android:background="@color/white"
+        android:layout_marginTop="30dp"
+        android:textSize="40sp"
+        android:textColor="@color/colorRespuestaOtros"
         app:layout_constraintTop_toBottomOf="@id/idiomaInteresado_2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        android:text="Traductor">
+
+    </TextView>
+
+    <EditText
+        android:id="@+id/et_translate_text"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
         android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp" />
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@color/white"
+        android:hint="Texto a traducir..."
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_translate_title" />
 
     <Spinner
         android:id="@+id/spinner_languages"
-        android:layout_width="0dp"
+        android:layout_width="70dp"
         android:layout_height="wrap_content"
         android:background="@color/color1"
         app:layout_constraintTop_toBottomOf="@id/et_translate_text"
@@ -188,7 +204,7 @@
         android:id="@+id/btn_translate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Translate"
+        android:text="Traducir"
         android:layout_marginTop="8dp"
         app:layout_constraintTop_toBottomOf="@id/spinner_languages"
         app:layout_constraintStart_toStartOf="parent"
@@ -199,10 +215,10 @@
     <TextView
         android:id="@+id/tv_translation_result"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Translation result"
+        android:layout_height="70dp"
+        android:text="Resultado de la traducción..."
         android:layout_marginTop="8dp"
-        android:textColor="@android:color/black"
+        android:textColor="@color/black"
         android:background="@color/color1"
         app:layout_constraintTop_toBottomOf="@id/btn_translate"
         app:layout_constraintStart_toStartOf="parent"
