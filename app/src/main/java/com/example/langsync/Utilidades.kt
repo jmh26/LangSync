@@ -11,11 +11,10 @@ import com.google.firebase.database.FirebaseDatabase
 class Utilidades {
 
     companion object{
-        fun crearUsuario(id:String, email: String, contra:String, rol: String,nombre: String){
-            var db_ref = FirebaseDatabase.getInstance().reference
-            val urlFotoPredeterminada = "android.resource://com.example.langsync/drawable/baseline_person_2_25"
-            val nombre = email.substringBefore('@')
-            val usuario = Usuario(id, email, contra, rol, urlFotoPredeterminada, nombre)
+        fun crearUsuario(id: String, email: String, contra: String, rol: String, nombre: String, idiomaNativo: String, idiomasInteres: String) {
+            val db_ref = FirebaseDatabase.getInstance().reference
+            val urlFotoPredeterminada = "android.resource://com.example.langsync/drawable/baseline_person_2_24"
+            val usuario = Usuario(id, email, contra, rol, urlFotoPredeterminada, nombre, idiomaNativo, idiomasInteres)
             db_ref.child("LangSync").child("Usuarios").child(id).setValue(usuario)
         }
 

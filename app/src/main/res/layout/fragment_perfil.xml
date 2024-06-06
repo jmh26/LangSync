@@ -6,8 +6,6 @@
     android:layout_height="match_parent"
     android:background="@drawable/fondoperfil">
 
-
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layoutUsuario"
         android:layout_width="match_parent"
@@ -18,15 +16,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/iv_imagenPerfil"
             android:layout_width="70dp"
             android:layout_height="70dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:src="@drawable/baseline_person_2_24">
-        </de.hdodenhof.circleimageview.CircleImageView>
+            android:src="@drawable/baseline_person_2_24" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -38,9 +34,7 @@
             android:textSize="20sp"
             android:layout_marginTop="10dp"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@id/iv_imagenPerfil">
-
-        </TextView>
+            app:layout_constraintStart_toEndOf="@id/iv_imagenPerfil" />
 
         <ImageView
             android:layout_width="40dp"
@@ -48,9 +42,25 @@
             android:id="@+id/iv_editar"
             android:src="@drawable/baseline_edit_note_24"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent" />
 
-        </ImageView>
+        <ImageView
+            android:id="@+id/ivModo"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/baseline_wb_sunny_24"
+            app:layout_constraintEnd_toStartOf="@id/iv_editar"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginEnd="8dp" />
+
+        <ImageView
+            android:id="@+id/ivMensaje"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/baseline_textsms_24"
+            app:layout_constraintEnd_toStartOf="@id/ivModo"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginEnd="8dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -64,7 +74,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/layoutUsuario">
 
-
         <ImageView
             android:id="@+id/idiomaNativo_img"
             android:layout_width="wrap_content"
@@ -74,24 +83,19 @@
             android:src="@drawable/baseline_textsms_24"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/idiomaNativo">
+            app:layout_constraintEnd_toStartOf="@id/idiomaNativoTitulo" />
 
-        </ImageView>
         <TextView
-            android:id="@+id/idiomaNativo"
+            android:id="@+id/idiomaNativoTitulo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Idioma nativo"
             android:layout_marginTop="5dp"
             android:layout_marginStart="30dp"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
-
-        </TextView>
-
+            app:layout_constraintStart_toStartOf="parent" />
 
     </LinearLayout>
-
 
     <LinearLayout
         android:id="@+id/idiomaHablado_2"
@@ -100,20 +104,13 @@
         app:layout_constraintTop_toBottomOf="@id/idiomaNativo_Layout"
         android:background="@color/white">
 
-
-
-
         <TextView
             android:id="@+id/idiomaHablado"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Idioma"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="10dp">
-
-
-
-        </TextView>
+            android:layout_marginTop="10dp" />
     </LinearLayout>
 
     <LinearLayout
@@ -135,22 +132,15 @@
             android:src="@drawable/baseline_interests_24"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/idiomaNativo">
-
-        </ImageView>
+            app:layout_constraintEnd_toStartOf="@id/idiomaInteresadoTitulo" />
 
         <TextView
-            android:id="@+id/idiomaInteresado"
+            android:id="@+id/idiomaInteresadoTitulo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Idiomas de Interés"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="5dp">
-
-
-
-        </TextView>
-
+            android:layout_marginTop="5dp" />
     </LinearLayout>
 
     <LinearLayout
@@ -166,14 +156,8 @@
             android:layout_height="wrap_content"
             android:text="Idioma(s)"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="10dp">
-
-
-
-        </TextView>
+            android:layout_marginTop="10dp" />
     </LinearLayout>
-
-
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_addpregunta"
@@ -183,7 +167,5 @@
         android:src="@drawable/baseline_question_mark_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
-
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>
+

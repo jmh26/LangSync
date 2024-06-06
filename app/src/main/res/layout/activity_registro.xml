@@ -4,10 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
     <androidx.cardview.widget.CardView
         android:layout_width="300dp"
-        android:layout_height="450dp"
+        android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -17,12 +16,10 @@
         android:layout_margin="16dp"
         app:cardBackgroundColor="@android:color/transparent">
 
-
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
+            android:layout_height="match_parent"
+            android:padding="16dp">
 
             <TextView
                 android:id="@+id/tvRegistro"
@@ -35,12 +32,10 @@
                 android:textColor="#CC1717"
                 android:layout_marginTop="20dp"
                 android:textSize="44sp"
-                android:layout_marginBottom="80dp"
-                app:layout_constraintBottom_toTopOf="@id/etEmail">
-
-            </TextView>
+                app:layout_constraintBottom_toTopOf="@id/etEmail"/>
 
             <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/etEmail"
                 android:layout_width="250dp"
                 android:layout_height="wrap_content"
                 android:hint="Email..."
@@ -49,24 +44,69 @@
                 android:imeOptions="actionNext"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvRegistro"
-                android:id="@+id/etEmail"
-                app:layout_constraintBottom_toTopOf="@id/etContrasena">
-
-            </androidx.appcompat.widget.AppCompatEditText>
+                app:layout_constraintTop_toBottomOf="@id/tvRegistro"/>
 
             <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/etContrasena"
                 android:layout_width="250dp"
                 android:layout_height="wrap_content"
                 android:hint="Contraseña..."
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="16dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/etEmail"
-                android:inputType="textPassword"
-                android:id="@+id/etContrasena">
+                android:inputType="textPassword"/>
 
-            </androidx.appcompat.widget.AppCompatEditText>
+            <TextView
+                android:id="@+id/tvIdiomaNativo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Idioma Nativo"
+                android:layout_marginTop="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/etContrasena"/>
+
+            <Spinner
+                android:id="@+id/spinnerIdiomaNativo"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvIdiomaNativo"/>
+
+            <TextView
+                android:id="@+id/tvIdiomasInteres1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Idioma de Interés 1"
+                android:layout_marginTop="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/spinnerIdiomaNativo"/>
+
+            <Spinner
+                android:id="@+id/spinnerIdiomasInteres1"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvIdiomasInteres1"/>
+
+            <TextView
+                android:id="@+id/tvIdiomasInteres2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Idioma de Interés 2"
+                android:layout_marginTop="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/spinnerIdiomasInteres1"/>
+
+            <Spinner
+                android:id="@+id/spinnerIdiomasInteres2"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvIdiomasInteres2"/>
 
             <Button
                 android:id="@+id/btConfirmar"
@@ -74,12 +114,10 @@
                 android:layout_width="250dp"
                 android:layout_height="wrap_content"
                 android:text="Registrar"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/etContrasena">
-
-            </Button>
+                app:layout_constraintTop_toBottomOf="@id/spinnerIdiomasInteres2"/>
 
             <TextView
                 android:id="@+id/tvYaTengoCuenta"
@@ -93,11 +131,9 @@
                 app:layout_constraintTop_toBottomOf="@id/btConfirmar"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginTop="10dp">
-
-            </TextView>
+                android:layout_marginTop="10dp"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
+

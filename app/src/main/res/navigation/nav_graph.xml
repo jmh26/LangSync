@@ -15,4 +15,18 @@
         android:name="com.example.langsync.Perfil.PerfilFragment"
         android:label="perfil"
         tools:layout="@layout/fragment_perfil" />
+
+    <fragment
+        android:id="@+id/buscarFragment"
+        android:name="com.example.langsync.Buscar.BuscarFragment"
+        android:label="Buscar"
+        tools:layout="@layout/fragment_buscar" />
+
+    <fragment
+        android:id="@+id/notificacionesFragment"
+        android:name="com.example.langsync.Notificaciones.NotificacionesFragment"
+        android:label="Notificaciones"
+        tools:layout="@layout/fragment_notificaciones" />
+
+
 </navigation>

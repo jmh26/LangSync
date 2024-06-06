@@ -56,7 +56,7 @@ class EditarPerfil : AppCompatActivity() {
         if (imagenUri != null) {
             Glide.with(this).load(imagenUri).into(imagenPerfil)
         } else {
-            imagenPerfil.setImageResource(R.drawable.baseline_person_2_25)
+            imagenPerfil.setImageResource(R.drawable.baseline_person_2_24)
         }
     }
     private fun seleccionarImagenDeGaleria() {
@@ -97,12 +97,12 @@ class EditarPerfil : AppCompatActivity() {
         if (!urlFoto.isNullOrEmpty()) {
             Glide.with(this)
                 .load(urlFoto)
-                .placeholder(R.drawable.baseline_person_2_25) // Placeholder mientras se carga la imagen
-                .error(R.drawable.baseline_person_2_25) // Imagen de error en caso de fallo de carga
+                .placeholder(R.drawable.baseline_person_2_24) // Placeholder mientras se carga la imagen
+                .error(R.drawable.baseline_person_2_24) // Imagen de error en caso de fallo de carga
                 .into(imagenPerfil)
         } else {
             // Si no hay URL de imagen, muestra la imagen predeterminada
-            imagenPerfil.setImageResource(R.drawable.baseline_person_2_25)
+            imagenPerfil.setImageResource(R.drawable.baseline_person_2_24)
         }
     }
     private fun guardarCambios() {

@@ -27,6 +27,15 @@
 
     </androidx.cardview.widget.CardView>
 
+    <Spinner
+        android:id="@+id/spinner_idioma_pregunta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/cardView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_crearPregunta"
         android:layout_width="wrap_content"
@@ -39,3 +48,4 @@
         app:srcCompat="@android:drawable/ic_input_add" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+

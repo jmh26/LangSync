@@ -1,0 +1,85 @@
+package com.example.langsync.Chat
+
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.langsync.R
+import com.example.langsync.databinding.ActivityChatBinding
+import com.example.langsync.model.Mensaje
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
+
+class ChatActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityChatBinding
+    private lateinit var mensajesAdapter: MensajeAdapter
+    private val mensajesList = mutableListOf<Mensaje>()
+    private lateinit var userId: String
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityChatBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        userId = intent.getStringExtra("USER_ID") ?: ""
+
+        mensajesAdapter = MensajeAdapter(this, mensajesList)
+        binding.recyclerViewMensajes.apply {
+            layoutManager = LinearLayoutManager(this@ChatActivity)
+            adapter = mensajesAdapter
+        }
+
+        binding.btnEnviar.setOnClickListener {
+            enviarMensaje()
+        }
+
+        cargarMensajes()
+    }
+
+    private fun enviarMensaje() {
+        val mensajeTexto = binding.etMensaje.text.toString()
+        if (mensajeTexto.isNotEmpty()) {
+            val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+            val databaseReference = FirebaseDatabase.getInstance().reference
+            val mensajeId = databaseReference.child("LangSync").child("Mensajes").push().key
+
+            val mensajeMap = mapOf(
+                "de" to currentUserId,
+                "para" to userId,
+                "mensaje" to mensajeTexto,
+                "timestamp" to System.currentTimeMillis()
+            )
+
+            mensajeId?.let {
+                databaseReference.child("LangSync").child("Mensajes").child(it).setValue(mensajeMap).addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        binding.etMensaje.text.clear()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun cargarMensajes() {
+        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val databaseReference = FirebaseDatabase.getInstance().reference
+
+        databaseReference.child("LangSync").child("Mensajes")
+            .addChildEventListener(object : ChildEventListener {
+                override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+                    val mensaje = snapshot.getValue(Mensaje::class.java)
+                    mensaje?.let {
+                        if ((it.de == currentUserId && it.para == userId) || (it.de == userId && it.para == currentUserId)) {
+                            mensajesList.add(it)
+                            mensajesAdapter.notifyItemInserted(mensajesList.size - 1)
+                        }
+                    }
+                }
+
+                override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {}
+                override fun onChildRemoved(snapshot: DataSnapshot) {}
+                override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {}
+                override fun onCancelled(error: DatabaseError) {}
+            })
+    }
+}

@@ -1,5 +1,6 @@
 package com.example.langsync
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -15,38 +16,36 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
-lateinit var auth: FirebaseAuth
-private var user: FirebaseUser? = null
-private lateinit var etEmail: EditText
-private lateinit var etContra: EditText
-private lateinit var registro: Button
-private lateinit var noTengoCuenta: TextView
-
 class Login : AppCompatActivity() {
+    private lateinit var auth: FirebaseAuth
+    private var user: FirebaseUser? = null
+    private lateinit var etEmail: EditText
+    private lateinit var etContra: EditText
+    private lateinit var loginButton: Button
+    private lateinit var registroButton: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         auth = FirebaseAuth.getInstance()
 
-        noTengoCuenta = findViewById(R.id.tvNoTengoCuenta)
-        noTengoCuenta.setOnClickListener {
+        etEmail = findViewById(R.id.etEmailL)
+        etContra = findViewById(R.id.etContrasenaL)
+        loginButton = findViewById(R.id.btConfirmarL)
+        registroButton = findViewById(R.id.tvNoTengoCuenta) // Asegurándome de que el ID es correcto
+
+        registroButton.setOnClickListener {
             startActivity(Intent(this, Registro::class.java))
         }
 
-        etEmail = findViewById(R.id.etEmailL)
-        etContra = findViewById(R.id.etContrasenaL)
-        registro = findViewById(R.id.btConfirmarL)
-
-        registro.setOnClickListener {
+        loginButton.setOnClickListener {
             val email = etEmail.text.toString()
             val contra = etContra.text.toString()
 
             if (email.isNotEmpty() && contra.isNotEmpty()) {
                 loginUser(email, contra)
             } else {
-                Toast.makeText(this, "Por favor, rellena todos los campos", Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(this, "Por favor, rellena todos los campos", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -55,26 +54,27 @@ class Login : AppCompatActivity() {
         auth.signInWithEmailAndPassword(email, contra)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    val currentUser: FirebaseUser? = auth.currentUser
-                    val userId = currentUser?.uid
-                    val rol = Utilidades.obtenerRol(email, contra, auth)
+                    user = auth.currentUser
+                    val userId = user?.uid
+                    val rol = "usuario" // Asigna el rol predeterminado
 
                     if (userId != null) {
                         // Verificar si el usuario ya existe en la base de datos
                         val databaseReference = FirebaseDatabase.getInstance().reference
-                        val userRef =
-                            databaseReference.child("LangSync").child("Usuarios").child(userId)
+                        val userRef = databaseReference.child("LangSync").child("Usuarios").child(userId)
                         userRef.addListenerForSingleValueEvent(object : ValueEventListener {
                             override fun onDataChange(snapshot: DataSnapshot) {
                                 if (!snapshot.exists()) {
                                     // Si el usuario no existe, crearlo
                                     val nombre = email.substringBefore('@')
-                                    Utilidades.crearUsuario(userId, email, contra, rol, nombre)
+                                    val idiomaNativo = "Español" // Valor predeterminado o puedes obtenerlo de alguna fuente
+                                    val idiomaInteres = "Inglés" // Valor predeterminado o puedes obtenerlo de alguna fuente
+                                    Utilidades.crearUsuario(userId, email, contra, rol, nombre, idiomaNativo, idiomaInteres)
                                 }
                                 // Continuar con el resto del código
                                 Log.d("Login", "Usuario logueado como: $rol")
                                 val esAdmin = rol == "administrador"
-                                val sharedPref = getSharedPreferences("login", MODE_PRIVATE)
+                                val sharedPref = getSharedPreferences("login", Context.MODE_PRIVATE)
                                 val editor = sharedPref.edit()
                                 editor.putBoolean("esAdmin", esAdmin)
                                 editor.apply()
@@ -84,15 +84,14 @@ class Login : AppCompatActivity() {
                             }
 
                             override fun onCancelled(error: DatabaseError) {
-                                Log.e(
-                                    "Login",
-                                    "Error al verificar el usuario en la base de datos: ${error.message}"
-                                )
+                                Log.e("Login", "Error al verificar el usuario en la base de datos: ${error.message}")
                             }
                         })
                     }
+                } else {
+                    Toast.makeText(this, "Error al iniciar sesión: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                    Log.e("Login", "Error al iniciar sesión", task.exception)
                 }
             }
     }
 }
-

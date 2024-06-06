@@ -1,3 +1,19 @@
 <resources>
     <string name="app_name">LangSync</string>
+    <string-array name="idiomas_array">
+        <item>Español</item>
+        <item>Inglés</item>
+        <item>Francés</item>
+        <item>Alemán</item>
+        <!-- Agrega más idiomas aquí -->
+    </string-array>
+
+    <string-array name="idiomas_interes_array">
+        <item>Ninguno</item>
+        <item>Español</item>
+        <item>Inglés</item>
+        <item>Francés</item>
+        <item>Alemán</item>
+        <!-- Agrega más idiomas aquí -->
+    </string-array>
 </resources>

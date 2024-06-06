@@ -1,6 +1,5 @@
 package com.example.langsync.Preguntas
 
-
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
@@ -11,10 +10,9 @@ data class Pregunta(
     var userId: String? = null,
     var fecha: String? = null,
     var nombre: String? = null,
-    var imagenPerfil: String? = null
-
-
-
-
-
+    var imagenPerfil: String? = null,
+    var idioma: String? = null,
+    var respondida: Boolean = false
 ): Parcelable
+
+

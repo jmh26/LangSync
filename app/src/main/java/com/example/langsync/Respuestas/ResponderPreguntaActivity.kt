@@ -14,6 +14,9 @@ import com.example.langsync.Respuestas.RespuestasAdaptador
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import de.hdodenhof.circleimageview.CircleImageView
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class ResponderPreguntaActivity : AppCompatActivity() {
 
@@ -57,7 +60,7 @@ class ResponderPreguntaActivity : AppCompatActivity() {
 
         // Configurar RecyclerView
         val recyclerViewRespuestas = findViewById<RecyclerView>(R.id.recyclerViewRespuestas)
-        respuestasAdapter = RespuestasAdaptador(listaRespuestas, this, autorId, preguntaId) { respuestaId ->
+        respuestasAdapter = RespuestasAdaptador(listaRespuestas, this, autorId) { respuestaId ->
             marcarRespuestaComoDestacada(respuestaId)
         }
         recyclerViewRespuestas.layoutManager = LinearLayoutManager(this)
@@ -76,21 +79,27 @@ class ResponderPreguntaActivity : AppCompatActivity() {
 
     private fun cargarRespuestas() {
         val dbRef = FirebaseDatabase.getInstance().reference
-        dbRef.child("LangSync").child("Respuestas").child(preguntaId).get()
+        dbRef.child("LangSync").child("Preguntas").child(preguntaId).get()
             .addOnSuccessListener { snapshot ->
                 listaRespuestas.clear()
+                var respuestaDestacadaId: String? = snapshot.child("destacada").value as? String
                 var respuestaDestacada: Respuesta? = null
-                val idRespuestaDestacada = snapshot.child("destacada").value as? String
-                snapshot.children.forEach { dataSnapshot ->
+
+                val respuestasSnapshot = snapshot.child("Respuestas")
+                respuestasSnapshot.children.forEach { dataSnapshot ->
                     val respuesta = dataSnapshot.getValue(Respuesta::class.java)
-                    if (respuesta?.id == idRespuestaDestacada) {
+                    if (respuesta?.id == respuestaDestacadaId) {
                         respuestaDestacada = respuesta
                     } else {
                         respuesta?.let { listaRespuestas.add(it) }
                     }
                 }
-                respuestaDestacada?.let { listaRespuestas.add(0, it) }
-                respuestasAdapter.actualizarEstrella(idRespuestaDestacada ?: "")
+
+                respuestaDestacada?.let {
+                    listaRespuestas.add(0, it)
+                }
+
+                respuestasAdapter.actualizarEstrella(respuestaDestacadaId ?: "")
                 respuestasAdapter.notifyDataSetChanged()
             }
     }
@@ -98,15 +107,16 @@ class ResponderPreguntaActivity : AppCompatActivity() {
     private fun enviarRespuesta(textoRespuesta: String) {
         if (textoRespuesta.isNotBlank()) {
             val dbRef = FirebaseDatabase.getInstance().reference
-            val respuestaId = dbRef.child("LangSync").child("Respuestas").child(preguntaId).push().key
+            val respuestaId = dbRef.child("LangSync").child("Preguntas").child(preguntaId).child("Respuestas").push().key
             val currentUser = FirebaseAuth.getInstance().currentUser
             val userId = currentUser?.uid
-            val fechaActual = System.currentTimeMillis().toString() // Puede formatearse según sea necesario
+            val fechaActual = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault()).format(Date())
             val respuesta = Respuesta(respuestaId, textoRespuesta, userId, fechaActual)
             respuestaId?.let {
-                dbRef.child("LangSync").child("Respuestas").child(preguntaId).child(it).setValue(respuesta)
+                dbRef.child("LangSync").child("Preguntas").child(preguntaId).child("Respuestas").child(it).setValue(respuesta)
                     .addOnSuccessListener {
                         findViewById<EditText>(R.id.etRespuesta).text.clear()
+                        dbRef.child("LangSync").child("Preguntas").child(preguntaId).child("respondida").setValue(true)
                         Toast.makeText(this, "Respuesta enviada", Toast.LENGTH_SHORT).show()
                         cargarRespuestas()  // Recargar las respuestas después de enviar una
                     }

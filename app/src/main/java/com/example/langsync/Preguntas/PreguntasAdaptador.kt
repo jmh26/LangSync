@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.langsync.R
 import com.example.langsync.Respuestas.PreguntaClickListener
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 
 class PreguntasAdaptador(
@@ -25,6 +26,7 @@ class PreguntasAdaptador(
     class PreguntaViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val texto = itemView.findViewById<TextView>(R.id.tv_texto)
         val fecha = itemView.findViewById<TextView>(R.id.tv_fecha)
+        val idioma = itemView.findViewById<TextView>(R.id.tv_idioma)
         val eliminar = itemView.findViewById<ImageView>(R.id.iv_eliminar)
         val nombre = itemView.findViewById<TextView>(R.id.nombrePregunta)
         val imagenPerfil = itemView.findViewById<ImageView>(R.id.iv_imagenPregunta)
@@ -34,18 +36,18 @@ class PreguntasAdaptador(
         return object : Filter() {
             override fun performFiltering(constraint: CharSequence?): FilterResults {
                 val busqueda = constraint.toString()
-                listaPreguntasFiltrada = if (busqueda.isEmpty()) {
+                val resultList = if (busqueda.isEmpty()) {
                     listaPreguntas
                 } else {
-                    val resultList = mutableListOf<Pregunta>()
+                    val filteredList = mutableListOf<Pregunta>()
                     for (row in listaPreguntas) {
-                        if (row.texto?.toLowerCase()!!.contains(busqueda.toLowerCase())) {
-                            resultList.add(row)
+                        if (row.texto?.contains(busqueda, ignoreCase = true) == true) {
+                            filteredList.add(row)
                         }
                     }
-                    resultList
+                    filteredList
                 }
-                return FilterResults().apply { values = listaPreguntasFiltrada }
+                return FilterResults().apply { values = resultList }
             }
 
             override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
@@ -61,9 +63,11 @@ class PreguntasAdaptador(
     }
 
     override fun onBindViewHolder(holder: PreguntaViewHolder, position: Int) {
-        val preguntaActual = listaPreguntas[position]
+        val preguntaActual = listaPreguntasFiltrada[position]
         holder.texto.text = preguntaActual.texto
         holder.fecha.text = preguntaActual.fecha
+        holder.idioma.text = preguntaActual.idioma
+        holder.nombre.text = preguntaActual.nombre
 
         holder.itemView.setOnClickListener {
             clickListener.onPreguntaClick(preguntaActual)
@@ -97,10 +101,12 @@ class PreguntasAdaptador(
             holder.imagenPerfil.setImageResource(R.drawable.baseline_person_2_24)
         }
 
+        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
         val sharedPreferences = holder.itemView.context.getSharedPreferences("login", Context.MODE_PRIVATE)
         val esAdmin = sharedPreferences.getBoolean("esAdmin", false)
 
-        if (esAdmin) {
+        // Mostrar el icono de eliminar si el usuario es admin o el propietario de la pregunta
+        if (esAdmin || userId == currentUserId) {
             holder.eliminar.visibility = View.VISIBLE
             holder.eliminar.setOnClickListener {
                 try {
