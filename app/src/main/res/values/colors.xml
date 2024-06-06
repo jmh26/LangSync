@@ -5,5 +5,7 @@
     <color name="color1">#E4DEDE</color>
     <color name="colorRespuestaAutor">#FFEBEE</color> <!-- Cambia a cualquier color que prefieras -->
     <color name="colorRespuestaOtros">#E8F5E9</color> <!-- Cambia a cualquier color que prefieras -->
+    <color name="nav_item_color_selected">#FF6200EE</color>
+    <color name="nav_item_color_unselected">#FF3700B3</color>
 
 </resources>

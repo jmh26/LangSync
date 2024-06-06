@@ -24,6 +24,7 @@ class ResponderPreguntaActivity : AppCompatActivity() {
     private lateinit var autorId: String
     private lateinit var respuestasAdapter: RespuestasAdaptador
     private val listaRespuestas = mutableListOf<Respuesta>()
+    private var esAdmin: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,9 +59,12 @@ class ResponderPreguntaActivity : AppCompatActivity() {
                 }
             }
 
+        // Verificar si el usuario es administrador
+        verificarAdministrador()
+
         // Configurar RecyclerView
         val recyclerViewRespuestas = findViewById<RecyclerView>(R.id.recyclerViewRespuestas)
-        respuestasAdapter = RespuestasAdaptador(listaRespuestas, this, autorId) { respuestaId ->
+        respuestasAdapter = RespuestasAdaptador(listaRespuestas, this, esAdmin) { respuestaId ->
             marcarRespuestaComoDestacada(respuestaId)
         }
         recyclerViewRespuestas.layoutManager = LinearLayoutManager(this)
@@ -74,6 +78,13 @@ class ResponderPreguntaActivity : AppCompatActivity() {
         val btnEnviarRespuesta = findViewById<Button>(R.id.btnEnviarRespuesta)
         btnEnviarRespuesta.setOnClickListener {
             enviarRespuesta(etRespuesta.text.toString())
+        }
+    }
+
+    private fun verificarAdministrador() {
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        currentUser?.let {
+            esAdmin = Utilidades.esAdmin(it.email ?: "", "administrador")
         }
     }
 

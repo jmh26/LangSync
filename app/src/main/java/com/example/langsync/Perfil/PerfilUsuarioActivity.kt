@@ -6,7 +6,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.bumptech.glide.Glide
-import com.example.langsync.Mensajes.EnviarMensajeActivity
+import com.example.langsync.Chat.ChatActivity
 import com.example.langsync.R
 import com.example.langsync.databinding.FragmentPerfilBinding
 import com.google.firebase.database.FirebaseDatabase
@@ -78,7 +78,7 @@ class PerfilUsuarioActivity : AppCompatActivity() {
     }
 
     private fun enviarMensaje() {
-        val intent = Intent(this, EnviarMensajeActivity::class.java)
+        val intent = Intent(this, ChatActivity::class.java)
         intent.putExtra("USER_ID", userId)
         startActivity(intent)
     }

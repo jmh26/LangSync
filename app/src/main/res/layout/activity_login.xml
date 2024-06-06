@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Login">
+    tools:context=".Login"
+    android:background="@drawable/gradient_background">
 
     <androidx.cardview.widget.CardView
         android:layout_width="300dp"
@@ -16,7 +17,7 @@
         app:cardCornerRadius="16dp"
         app:cardElevation="8dp"
         android:layout_margin="16dp"
-        app:cardBackgroundColor="@android:color/transparent">
+       >
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -30,7 +31,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 android:text="Login"
-                android:textColor="#CC1717"
                 android:layout_marginTop="20dp"
                 android:textSize="44sp"
                 android:layout_marginBottom="80dp"
@@ -62,7 +62,9 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/etEmailL"
                 android:inputType="textPassword"
-                android:id="@+id/etContrasenaL">
+                android:id="@+id/etContrasenaL"
+
+                >
 
             </androidx.appcompat.widget.AppCompatEditText>
 

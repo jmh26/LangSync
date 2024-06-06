@@ -17,7 +17,7 @@ import com.google.firebase.database.FirebaseDatabase
 class RespuestasAdaptador(
     private val listaRespuestas: MutableList<Respuesta>,
     private val context: Context,
-    private val autorId: String,
+    private val esAdmin: Boolean,  // Pasar si es administrador
     private val destacarListener: (String) -> Unit
 ) : RecyclerView.Adapter<RespuestasAdaptador.RespuestaViewHolder>() {
 
@@ -35,7 +35,7 @@ class RespuestasAdaptador(
 
     override fun onBindViewHolder(holder: RespuestaViewHolder, position: Int) {
         val respuesta = listaRespuestas[position]
-        holder.bind(respuesta, context, autorId, idRespuestaDestacada == respuesta.id, destacarListener)
+        holder.bind(respuesta, context, esAdmin, idRespuestaDestacada == respuesta.id, destacarListener)
     }
 
     override fun getItemCount(): Int = listaRespuestas.size
@@ -51,7 +51,7 @@ class RespuestasAdaptador(
         private val imagen = itemView.findViewById<ImageView>(R.id.iv_imagenRespuesta)
         private val estrella = itemView.findViewById<ImageView>(R.id.iv_estrella)
 
-        fun bind(respuesta: Respuesta, context: Context, autorId: String, esDestacada: Boolean, destacarListener: (String) -> Unit) {
+        fun bind(respuesta: Respuesta, context: Context, esAdmin: Boolean, esDestacada: Boolean, destacarListener: (String) -> Unit) {
             texto.text = respuesta.texto
             fecha.text = respuesta.fecha
 
@@ -72,8 +72,7 @@ class RespuestasAdaptador(
                     }
             }
 
-            val currentUser = FirebaseAuth.getInstance().currentUser
-            if (currentUser?.uid == autorId) {
+            if (esAdmin) {
                 estrella.visibility = View.VISIBLE
                 estrella.setImageResource(if (esDestacada) R.drawable.baseline_star_24 else R.drawable.baseline_star_border_24)
                 estrella.setOnClickListener {
@@ -94,3 +93,4 @@ class RespuestasAdaptador(
         }
     }
 }
+
